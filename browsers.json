@@ -1,0 +1,29 @@
+{
+    "safari": {
+        "default": "latest",
+        "versions": {
+            "latest": {
+                "image": ["/usr/bin/safaridriver"],
+                "port": "4444"
+            }
+        }
+    },
+    "chrome": {
+        "default": "latest",
+        "versions": {
+            "latest": {
+                "image": ["/Users/yuriy/chromedriver/chromedriver"],
+                "port": "4444"
+            }
+        }
+    },
+    "firefox": {
+        "default": "latest",
+        "versions": {
+            "latest": {
+                "image": ["/Users/yuriy/geckodriver/geckodriver"],
+                "port": "4444"
+            }
+        }
+    }
+}
