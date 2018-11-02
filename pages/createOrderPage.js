@@ -1,4 +1,24 @@
+
 module.exports = {
+
+    commands: [{
+        proceedToThirdStep: function (browser)  {
+            let createOrderPage = this.api.page.createOrderPage();
+            browser.pause(1000);                    // убрать во время переноса проекта
+            createOrderPage
+                .waitForElementVisible('@step1Form')
+                .click('@goToStep2Button',  res => {console.log(res)});
+            browser.pause(1000);                    // убрать во время переноса проекта
+            createOrderPage
+                .waitForElementVisible('@step2Form')
+                .click('@goToStep3Button', res => {console.log(res)});
+            browser.pause(1000);                     // убрать во время переноса проекта
+            createOrderPage
+                .waitForElementVisible('@step3Form');
+            return this;
+        },
+
+    }],
 
     elements: {
         form: '.js_order_form',
@@ -13,6 +33,18 @@ module.exports = {
             selector:'//option[text()="Other" and @value="88"]',
             locateStrategy: 'xpath'
         },
+        goToStep2Button: {
+            selector: '//span[contains(text(), "go to step 2")]',
+            locateStrategy: 'xpath',
+        },
+
+        goToStep3Button: {
+            selector: '//span[contains(text(), "go to step 3")]',
+            locateStrategy: 'xpath',
+        },
+        step1Form: '#step-1.active',
+        step2Form: '#step-2.active',
+        step3Form: '#step-3.active',
         numberPagesField: '#order_product_pages',
         deadlineDateField: '#order_deadline_date',
         deadlineTimeField: '#order_deadline_time',

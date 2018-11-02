@@ -18,14 +18,8 @@ module.exports = {
             .login('customauto11@i.com','q123456789');
         customerOrdersPage
             .openCreateOrderPage();
-        browser.pause(1000);
         createOrderPage
-            .click('@button23');
-        browser.pause(1000);
-        createOrderPage
-            .click('@button33');
-
-
+            .proceedToThirdStep(browser);
 
     },
 

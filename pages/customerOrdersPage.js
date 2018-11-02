@@ -12,8 +12,7 @@ module.exports = {
             //     .waitForElementVisible('@popup')
             //     .click('@placeNewOrderButton');
             createOrderPage
-                .waitForElementVisible('@form')
-                .waitForElementVisible('@button23');
+                .waitForElementVisible('@form');
         }
 
     }],
