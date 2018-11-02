@@ -1,18 +1,14 @@
-function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-        if ((new Date().getTime() - start) > milliseconds){
-            break;
-        }
-    }
-}
+
+var createDeadline = require('../../.utils/createDeadline');
+var command = require('../../.utils/otherCommands');
 
 module.exports = {
     // suite  который проверяет предзаполненные значения ордер формы
 
     before: (browser) => {
         let mainPage = browser.page.mainPage(),
-            customerOrdersPage = browser.page.customerOrdersPage();
+            customerOrdersPage = browser.page.customerOrdersPage(),
+            createOrderPage = browser.page.createOrderPage();
 
         mainPage.header = browser.page.mainPage().section.header;
         customerOrdersPage.header = browser.page.customerOrdersPage().section.header;
@@ -21,7 +17,15 @@ module.exports = {
             .navigate()
             .login('customauto11@i.com','q123456789');
         customerOrdersPage
-            .openCreateOrderPage()
+            .openCreateOrderPage();
+        browser.pause(1000);
+        createOrderPage
+            .click('@button23');
+        browser.pause(1000);
+        createOrderPage
+            .click('@button33');
+
+
 
     },
 
@@ -29,100 +33,66 @@ module.exports = {
         browser.end(); // после выполнения всего сценария закроем браузер
     },
 
-    'Check Type of paper' :(browser) => {
+    'Дефолтное значение для Type of Paper: Essay (Any Type)' :(browser) => {
         let createOrderPage = browser.page.createOrderPage();
 
         createOrderPage
             .expect.element('@assignmentOptionPaperType').to.be.selected.before(1000);
     },
 
-     'Check Topic': (browser) => {
+     'Дефолтное значение для Topic: пустое': (browser) => {
          let createOrderPage = browser.page.createOrderPage();
         createOrderPage
-            .assert.containsText('@topicField', "");
+            .assert.value('@topicField', "");
 
      },
 
-    'Check Subject' :(browser) => {
+    'Дефолтное значение для Subject: Other' :(browser) => {
         let createOrderPage = browser.page.createOrderPage();
 
         createOrderPage
             .expect.element('@assignmentOptionSubjectOther').to.be.selected.before(1000);
     },
 
-    'Check Number of pages': (browser) => {
+    'Дефолтное значение для Number of pages: 2': (browser) => {
         let createOrderPage = browser.page.createOrderPage();
         createOrderPage
-            .assert.attributeContains('@numberPagesField','value', '2');
+            .assert.value('@numberPagesField', '2');
 
     },
 
-    'Check DeadlineDate': (browser) => {
-        let createOrderPage = browser.page.createOrderPage();
-
-        var dateOrder = new Date(),
-            currentDate = new Date();
-
-        dateOrder.setDate(currentDate.getDate()+10);
-        var day = dateOrder.getDate();
-        if (day < 10) {
-            day = "0" + day;
-        }
-        var month = dateOrder.getMonth()+1;
-        if (month < 10) {
-            month = "0" + month;
-        }
-        var year = dateOrder.getFullYear();
-
-        dateOrder = month + '-' + day + '-' + year;
-
-        createOrderPage
-            .assert.attributeContains('@deadlineDateField','value', dateOrder);
-
-    },
-
-    'Check DeadlineTime': (browser) => {
-        let createOrderPage = browser.page.createOrderPage();
-
-        var dateOrder = new Date(),
-            currentDate = new Date();
-
-        var time;
-        if (dateOrder.getHours() >= 13) {
-            time = (currentDate.getHours()-12).toString();
-            dateOrder = time + " pm";
-        }else{
-            time = dateOrder.getHours().toString();
-            dateOrder = time + " am";
-        }
-
-        createOrderPage
-            .assert.attributeContains('@deadlineTimeField','value', dateOrder);
-
-    },
-
-    'Check Button23' :(browser) => {
+    'Дефолтное значение для DeadlineDate: Сегодняшняя дата + 10 дней': (browser) => {
         let createOrderPage = browser.page.createOrderPage();
 
         createOrderPage
-            .click('@button23');
+            .assert.attributeContains('@deadlineDateField','value', createDeadline.createDeadlineDate(10));
+
     },
 
-    'Check Type of service': (browser) => {
+    'Дефолтное значение для DeadlineTime: Количество полных часов сейчас': (browser) => {
+        let createOrderPage = browser.page.createOrderPage();
+
+
+        createOrderPage
+            .assert.attributeContains('@deadlineTimeField','value', createDeadline.createDeadlineTime());
+
+    },
+
+    'Дефолтное значение для Type of service: Writing from scratch': (browser) => {
         let createOrderPage = browser.page.createOrderPage();
         createOrderPage
-            .assert.attributeContains('@orderProductService1','checked', 'true');
+            .expect.element('@orderProductService1').to.be.selected.before(1000);
 
     },
 
-    'Check Writer quality': (browser) => {
+    'Дефолтное значение для Writer quality: Standard': (browser) => {
         let createOrderPage = browser.page.createOrderPage();
         createOrderPage
-            .assert.attributeContains('@orderProductWrlevel1','checked', 'true');
+            .expect.element('@orderProductWrlevel1').to.be.selected.before(1000);
 
     },
 
-    'Check Number of cited resources': (browser) => {
+    'Дефолтное значение для Number of cited resources: 0': (browser) => {
         let createOrderPage = browser.page.createOrderPage();
         createOrderPage
             .assert.attributeContains('@orderProductSourcesField','value', '0');
@@ -130,60 +100,37 @@ module.exports = {
     },
 
 
-    'Check Format of citation' :(browser) => {
+    'Дефолтное значение для Format of citation: Other' :(browser) => {
         let createOrderPage = browser.page.createOrderPage();
 
         createOrderPage
             .expect.element('@assignmentOptionProductSourcesOther').to.be.selected.before(1000);
     },
 
-    'Check Button33' :(browser) => {
-        let createOrderPage = browser.page.createOrderPage();
 
-        sleep(1000);
-            createOrderPage
-                .click('@button33');
-
-    },
-
-    'Check Paper instructions Placeholder': (browser) => {
+    'Дефолтное значение для Paper instructions: пустое': (browser) => {
         let createOrderPage = browser.page.createOrderPage();
         createOrderPage
-            .assert.attributeContains('@orderDescriptionTextarea','placeholder', 'List your instructions or upload the files for the order.');
+            .assert.value('@orderDescriptionTextarea', '');
     },
 
-    'Check Paper instructions Textarea': (browser) => {
-        let createOrderPage = browser.page.createOrderPage();
-        createOrderPage
-            .assert.containsText('@orderDescriptionTextarea', "");
-        sleep(10000);
-    },
 
-    'Check Preferred Writers': (browser) => {
+    'Preferred Writers по-дефолту не выбраны': (browser) => {
 
         let createOrderPage = browser.page.createOrderPage(),
             preferredWriter = '//div[contains(@class, "b-form-group__writer")]';
 
-        browser
-            .elements('xpath',preferredWriter, function(result) {
-                for(var i in result.value) {
-                    i = ++i;
-                    let preferredWriterLable = preferredWriter +`[${i}]/label`;
-                    createOrderPage
-                        .api.useXpath()
-                        .expect.element(preferredWriterLable).to.have.not.css('.b-checkbox_writer-card_active')
-                }
-            });
-
+        for (var i=1; i<=10; i++) {
+            let preferredWriterLable = preferredWriter + `[${i}]/label`;
+            createOrderPage
+                .api.useXpath()
+                .expect.element(preferredWriterLable).to.have.not.css('.b-checkbox_writer-card_active')
+        }
+        // command.checkSomeElementsWithPath(browser, preferredWriter); // example command for search and check elements without length
     },
 
-    'Check Vac1 Present On Simple Bidding': (browser) => {
-        let createOrderPage = browser.page.createOrderPage();
-        createOrderPage
-            .expect.element('@orderVasCo1Input').to.be.present;
 
-    },
-    'Check Vac1 Button On Simple Bidding': (browser) => {
+    'Дефолтно отображается кнопка Proceed to Bidding': (browser) => {
         let createOrderPage = browser.page.createOrderPage();
         createOrderPage
             .expect.element('@CreateOrderSpanInButton').to.be.present;
